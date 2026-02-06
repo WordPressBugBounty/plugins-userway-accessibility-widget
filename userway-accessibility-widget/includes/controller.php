@@ -121,13 +121,16 @@ class Userway_REST_Widget_Controller extends WP_REST_Controller
         }
 
         if ($accountModel) {
-            $wpdb->update($this->tableName, [
-                'state' => $state,
-                'account_id' => $accountId,
-                'updated_time' => $date,
-            ], ['account_id' => $accountModel->account_id]);
+        	if ($accountModel->account_id == $accountId) {
+        		$wpdb->update($this->tableName, [
+                   'state' => $state,
+                   'account_id' => $accountId,
+                   'updated_time' => $date,
+                ], ['account_id' => $accountModel->account_id]);
+                return rest_ensure_response($this->prepareResponseMessage('account successfully saved'));
+        	}
 
-            return rest_ensure_response($this->prepareResponseMessage('account successfully saved'));
+            return rest_ensure_response($this->prepareResponseMessage('account successfully found'));
         }
 
         $wpdb->insert($this->tableName, [
